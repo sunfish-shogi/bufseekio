@@ -19,6 +19,8 @@ type ReadSeeker struct {
 	curr        int64
 }
 
+// NewReadSeeker creates new ReadSeeker.
+// ReadSeeker generates up to historySize blocks which are consist of blockSize bytes.
 func NewReadSeeker(r io.ReadSeeker, blockSize, historySize int) *ReadSeeker {
 	blocks := make([]*cacheBlock, historySize)
 	for i := range blocks {
