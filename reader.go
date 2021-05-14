@@ -7,9 +7,8 @@ import (
 )
 
 type cacheBlock struct {
-	offset  int64
-	data    []byte
-	lastRef int
+	offset int64
+	data   []byte
 }
 
 type ReadSeeker struct {
@@ -18,7 +17,6 @@ type ReadSeeker struct {
 	historySize int
 	blocks      []*cacheBlock
 	curr        int64
-	readCnt     int
 }
 
 func NewReadSeeker(r io.ReadSeeker, blockSize, historySize int) *ReadSeeker {
@@ -38,13 +36,11 @@ func NewReadSeeker(r io.ReadSeeker, blockSize, historySize int) *ReadSeeker {
 }
 
 func (r *ReadSeeker) Read(p []byte) (int, error) {
-	r.readCnt++
 	for _, block := range r.blocks {
 		if block.offset < 0 {
 			continue
 		}
 		if r.curr >= block.offset && r.curr < block.offset+int64(len(block.data)) {
-			block.lastRef = r.readCnt
 			r.sortBlocks()
 			n, err := r.readFromBlock(p, block)
 			return n, err
@@ -54,7 +50,6 @@ func (r *ReadSeeker) Read(p []byte) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	block.lastRef = r.readCnt
 	r.sortBlocks()
 	return r.readFromBlock(p, block)
 }
