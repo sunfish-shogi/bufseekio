@@ -1,7 +1,7 @@
 bufseekio
 ---------
 
-bufseekio provies buffered I/O with io.Seeker interface.
+bufseekio provides buffered I/O with io.Seeker interface.
 
 ### ReadSeeker
 
